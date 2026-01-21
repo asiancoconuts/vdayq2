@@ -1,0 +1,85 @@
+// STATE VARIABLES
+let noClicks = 1;
+let yesClicks = -1; // IMPORTANT: start at -1 so first NO click shows index 0
+
+const maxNoClicks = 5;
+const minNoScale = 0.65;
+let noScale = 1;
+let yesScale = 1;
+
+// DOM ELEMENTS
+const gifElement = document.getElementById("togepi-gif");
+const noButton = document.getElementById("no-btn");
+const yesButton = document.getElementById("yes-btn");
+const buttonContainer = document.querySelector(".btn-container");
+const yesButtonStyle = window.getComputedStyle(yesButton);
+const maxYesWidth = parseFloat(yesButtonStyle.maxWidth);
+
+// ASSETS
+const gifs = [
+  "assets/images/togepi-happy.gif",
+  "assets/images/togepi-sad-1.gif",
+  "assets/images/togepi-sad-2.gif",
+  "assets/images/togepi-crying.gif",
+  "assets/images/togepi-sad-1.gif",
+];
+const buttonMessages = [
+  "???Are you sure??",
+  "Ji-won please PLEASE",
+  "My heart can't take it",
+  "You can't do this to me!",
+  "I beg you to reconsider（>﹏<）",
+];
+const buttonMessages2 = [
+  "You want to click here!",
+  "I think you misclicked",
+  "Ok... please click here",
+  "...Yes... please...(´•︵•`)",
+  "PLZPLZZPLZPZLZPLZ",
+  "I promise this one is correct",
+  "Just click it already please im gonna cry",
+  "Pretty please with a Bangchan or Levi on top",
+];
+
+// NO BUTTON CLICK LOGIC
+noButton.addEventListener("click", () => {
+  // Change GIF
+  if (noClicks < maxNoClicks) {
+    gifElement.src = gifs[noClicks];
+  }
+  // Update NO button text
+  noButton.textContent = buttonMessages[noClicks % maxNoClicks];
+
+  // Update YES button text (driven by NO clicks)
+  yesClicks = (yesClicks + 1) % buttonMessages2.length;
+  yesButton.textContent = buttonMessages2[yesClicks];
+
+  // Resize NO button to fit text
+  noButton.style.width = "auto";
+  noButton.style.width = `${noButton.scrollWidth}px`;
+
+  // Shrink NO button
+  if (noScale > minNoScale) {
+    noScale -= 0.1;
+    noButton.style.transform = `scale(${noScale})`;
+  }
+
+  // Grow YES button (using actual rendered width)
+  const scaledWidth = yesButton.getBoundingClientRect().width;
+
+  if (scaledWidth < maxYesWidth) {
+    yesScale += 0.5;
+    yesButton.style.transform = `scale(${yesScale})`;
+
+    // Adjust gap
+    const rootStyles = getComputedStyle(document.documentElement);
+    const gapScaleFactor =
+      parseFloat(rootStyles.getPropertyValue("--gap-scale-factor")) || 250;
+
+    const currentGap = parseFloat(buttonContainer.style.gap) || 20;
+    const newGap = Math.sqrt(currentGap * gapScaleFactor);
+    buttonContainer.style.gap = `${newGap}px`;
+  }
+  // Increment NO click count
+  noClicks++;
+});
