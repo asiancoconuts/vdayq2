@@ -1,6 +1,13 @@
 // STATE VARIABLES
 let noClicks = 1;
 let yesClicks = -1; // IMPORTANT: start at -1 so first NO click shows index 0
+let lastGifIndex = -1;
+
+let lastNoTextIndex = -1;
+let secondLastNoTextIndex = -1;
+
+let lastYesTextIndex = -1;
+let secondLastYesTextIndex = -1;
 
 const maxNoClicks = 5;
 const minNoScale = 0.65;
@@ -23,6 +30,10 @@ const gifs = [
   "assets/images/togepi-crying.gif",
   "assets/images/togepi-crying-2.gif",
   "assets/images/squirtle-crying.gif",
+  "assets/images/squirtle-crying-2.gif",
+  "assets/images/squirtle-crying-3.gif",
+  "assets/images/pikachu-crying.gif",
+  "assets/images/jigglypuff-crying.gif",
 ];
 const buttonMessages = [
   "???Are you sure??",
@@ -30,6 +41,11 @@ const buttonMessages = [
   "My heart can't take it",
   "You can't do this to me!",
   "Please reconsider!!（>﹏<）",
+  "Valentines alone...",
+  "I'll pretend I'm not hurt",
+  "You're sure? like… sure-sure?",
+  "I respect your decision :(",
+  "Noted and journaled (◡︵◡)",
 ];
 const buttonMessages2 = [
   "You want to click here!",
@@ -40,18 +56,55 @@ const buttonMessages2 = [
   "PLZPLZZPLZPZLZPLZ",
   "Click for SKZ VIP TIX",
   "haha... click here...",
+  "Click me for good luck",
+  "This is the correct one",
+  "Free Levi Plushie",
+  "(つ╥﹏╥)つ🙏🙏🙏"
 ];
 
 // NO BUTTON CLICK LOGIC
 noButton.addEventListener("click", () => {
   // Change GIF
-  gifElement.src = gifs[noClicks % gifs.length];
-  // Update NO button text
-  noButton.textContent = buttonMessages[noClicks % maxNoClicks];
+// RANDOM GIF WITH NO REPEATS
+let randomIndex;
+do {
+  randomIndex = Math.floor(Math.random() * gifs.length);
+} while (randomIndex === lastGifIndex);
 
-  // Update YES button text (driven by NO clicks)
-  yesClicks = (yesClicks + 1) % buttonMessages2.length;
-  yesButton.textContent = buttonMessages2[yesClicks];
+lastGifIndex = randomIndex;
+gifElement.src = gifs[randomIndex];  // Update NO button text
+
+// RANDOM NO TEXT WITH NO DOUBLE REPEATS
+let randomNoIndex;
+
+do {
+  randomNoIndex = Math.floor(Math.random() * buttonMessages.length);
+} while (
+  randomNoIndex === lastNoTextIndex || 
+  randomNoIndex === secondLastNoTextIndex
+);
+
+// shift history
+secondLastNoTextIndex = lastNoTextIndex;
+lastNoTextIndex = randomNoIndex;
+
+noButton.textContent = buttonMessages[randomNoIndex];
+
+// RANDOM YES TEXT WITH NO DOUBLE REPEATS
+let randomYesIndex;
+
+do {
+  randomYesIndex = Math.floor(Math.random() * buttonMessages2.length);
+} while (
+  randomYesIndex === lastYesTextIndex ||
+  randomYesIndex === secondLastYesTextIndex
+);
+
+// shift history
+secondLastYesTextIndex = lastYesTextIndex;
+lastYesTextIndex = randomYesIndex;
+
+yesButton.textContent = buttonMessages2[randomYesIndex];
 
   // Resize NO button to fit text
   noButton.style.width = "auto";
