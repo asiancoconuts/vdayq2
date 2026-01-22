@@ -19,5 +19,30 @@
       <h1 id="message"> Ji-WON but I'm the real winner</h1>
       <h1 id="message">♡´･ᴗ･`♡</h1>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+      function fireworkBurst(x) {
+        confetti({
+          particleCount: 80,
+          spread: 60,
+          startVelocity: 50,
+          decay: 0.92,   // sparkle trail effect
+          ticks: 100,    // longer particle life = more shimmer
+          scalar: 1.2,   // slightly larger particles
+          origin: { x, y: 0.6 }
+        });
+      }
+    
+      const burstIntervals = [0, 400, 800, 1200, 1600];
+      burstIntervals.forEach((delay, i) => {
+        setTimeout(() => {
+          const x = 0.2 + 0.15 * (i % 3); // left, center, right
+          fireworkBurst(x);
+        }, delay);
+      });
+    </script>  
+    
+</script>
   </body>
 </html>
